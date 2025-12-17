@@ -173,7 +173,7 @@ namespace ProyectoFinalBasedatos
         {
             if (dgvProveedor.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Selecciona un registro.");
+                MessageBox.Show("Selecciona un proveedor.");
                 return;
             }
 
@@ -184,28 +184,22 @@ namespace ProyectoFinalBasedatos
                 con.Open();
 
                 string query = @"
-            UPDATE proveedor
-            SET nombre = '',
-                telefono = '',
-                email = '',
-                direccion = '',
-                id_pais = NULL,
-                usuarioelimina = @uAccion,
-                fechaelimina = NOW()
-            WHERE id_proveedor = @id
-        ";
+UPDATE proveedor
+SET estado_a = 0,
+    usuarioElimina = @usuario,
+    fechaElimina = NOW()
+WHERE id_proveedor = @id";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@uAccion", usuarioAccionID);
+                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
             }
 
-            MessageBox.Show("Proveedor marcado como eliminado.");
-
             CargarProveedores();
+            MessageBox.Show("Proveedor eliminado correctamente (borrado lógico).");
         }
 
         private void LimpiarProveedor()
@@ -363,27 +357,31 @@ namespace ProyectoFinalBasedatos
                 return;
             }
 
-            int id = Convert.ToInt32(dgvOrdenCompra.SelectedRows[0].Cells["id_ordencompra"].Value);
+            int id = Convert.ToInt32(
+                dgvOrdenCompra.SelectedRows[0].Cells["id_ordencompra"].Value
+            );
 
             using (var con = DB.GetConnection())
             {
                 con.Open();
 
                 string query = @"
-            UPDATE ordencompra
-            SET usuarioelimina=@u,
-                fechaelimina=NOW()
-            WHERE id_ordencompra=@id";
+        UPDATE ordencompra
+        SET estado_a = 0,
+            usuarioElimina = @u,
+            fechaElimina = NOW()
+        WHERE id_ordencompra = @id";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@u", usuarioAccionID);  // 👈 Registrar acción
+                    cmd.Parameters.AddWithValue("@u", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             CargarOrdenesCompra();
+            MessageBox.Show("Orden de compra eliminada (borrado lógico).");
         }
 
         private void LimpiarOC()
@@ -537,24 +535,22 @@ namespace ProyectoFinalBasedatos
             {
                 con.Open();
 
-                // Modificamos la consulta para hacer un "borrado lógico" con las fechas de eliminación y el usuario
                 string query = @"
-            UPDATE detallecompra
-            SET usuarioelimina = @usuario,
-                fechaelimina = NOW()
-            WHERE id_detallecompra = @id";
+        UPDATE detallecompra
+        SET estado_a = 0,
+            usuarioelimina = @usuario,
+            fechaelimina = NOW()
+        WHERE id_detallecompra = @id";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    // Pasamos el usuario que está realizando la acción
                     cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@id", idDetalleSeleccionado);
-
                     cmd.ExecuteNonQuery();
                 }
             }
 
-            MessageBox.Show("Detalle eliminado (borrado lógico).");
+            MessageBox.Show("Detalle marcado como eliminado.");
             CargarDetalleCompra();
         }
 

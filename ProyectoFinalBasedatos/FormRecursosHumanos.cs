@@ -239,27 +239,31 @@ namespace ProyectoFinalBasedatos
                 return;
             }
 
-            int idEmpleado = Convert.ToInt32(dgvEmpleados.SelectedRows[0].Cells["ID_Empleado"].Value);
+            int idEmpleado = Convert.ToInt32(
+                dgvEmpleados.SelectedRows[0].Cells["ID_Empleado"].Value
+            );
 
             using (var con = DB.GetConnection())
             {
                 con.Open();
+
                 string query = @"
         UPDATE empleado
-        SET usuarioElimina = @usuario,
+        SET estado_a = 0,
+            usuarioElimina = @usuario,
             fechaElimina = NOW()
         WHERE ID_Empleado = @idEmpleado";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);  // Registrar acción del usuario
+                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@idEmpleado", idEmpleado);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             CargarEmpleados();
-            MessageBox.Show("Empleado marcado como eliminado.");
+            MessageBox.Show("Empleado eliminado (borrado lógico).");
         }
 
         private void CargarPuestos()
@@ -372,27 +376,31 @@ namespace ProyectoFinalBasedatos
                 return;
             }
 
-            int idPuesto = Convert.ToInt32(dgvPuestos.SelectedRows[0].Cells["ID_Puesto"].Value);
+            int idPuesto = Convert.ToInt32(
+                dgvPuestos.SelectedRows[0].Cells["ID_Puesto"].Value
+            );
 
             using (var con = DB.GetConnection())
             {
                 con.Open();
+
                 string query = @"
         UPDATE puesto
-        SET usuarioElimina = @usuario,
+        SET estado_a = 0,
+            usuarioElimina = @usuario,
             fechaElimina = NOW()
         WHERE ID_Puesto = @idPuesto";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);  // Registrar acción
+                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@idPuesto", idPuesto);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             CargarPuestos();
-            MessageBox.Show("Puesto marcado como eliminado.");
+            MessageBox.Show("Puesto eliminado correctamente (borrado lógico).");
         }
 
         private void CargarTurnos()
@@ -512,13 +520,14 @@ namespace ProyectoFinalBasedatos
                 con.Open();
                 string query = @"
         UPDATE turno
-        SET usuarioElimina = @usuario,
+        SET estado_a = 0,
+            usuarioElimina = @usuario,
             fechaElimina = NOW()
         WHERE ID_Turno = @idTurno";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);  // Registrar acción
+                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@idTurno", idTurno);
                     cmd.ExecuteNonQuery();
                 }
@@ -694,20 +703,24 @@ namespace ProyectoFinalBasedatos
                 return;
             }
 
-            int idAsistencia = Convert.ToInt32(dgvAsistencias.SelectedRows[0].Cells["ID_Asistencia"].Value);
+            int idAsistencia = Convert.ToInt32(
+                dgvAsistencias.SelectedRows[0].Cells["ID_Asistencia"].Value
+            );
 
             using (var con = DB.GetConnection())
             {
                 con.Open();
+
                 string query = @"
-        UPDATE Asistencia
-        SET usuarioElimina = @usuario,
-            fechaElimina = NOW()
-        WHERE ID_Asistencia = @idAsistencia";
+UPDATE asistencia
+SET estado_a = 0,
+    usuarioElimina = @usuario,
+    fechaElimina = NOW()
+WHERE ID_Asistencia = @idAsistencia";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);  // Registrar acción
+                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@idAsistencia", idAsistencia);
                     cmd.ExecuteNonQuery();
                 }

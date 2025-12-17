@@ -329,22 +329,24 @@ namespace ProyectoFinalBasedatos
             using (var con = DB.GetConnection())
             {
                 con.Open();
+
                 string query = @"
-        UPDATE Rol
-        SET usuarioElimina = @usuarioElimina,
+        UPDATE rol
+        SET estado_a = 0,
+            usuarioElimina = @usuario,
             fechaElimina = NOW()
         WHERE ID_Rol = @idRol";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);  // El ID del usuario que elimina el rol
+                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@idRol", idRol);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             CargarRolesdtg();
-            MessageBox.Show("Rol eliminado.");
+            MessageBox.Show("Rol eliminado (borrado lógico).");
         }
 
         private void CargarSesiones()
@@ -461,27 +463,28 @@ namespace ProyectoFinalBasedatos
                 return;
             }
 
-            int idSesion = Convert.ToInt32(dgvSesiones.SelectedRows[0].Cells["ID_Sesion"].Value);
+            int idSesion = Convert.ToInt32(
+                dgvSesiones.SelectedRows[0].Cells["ID_Sesion"].Value
+            );
 
             using (var con = DB.GetConnection())
             {
                 con.Open();
+
                 string query = @"
         UPDATE Sesion
-        SET usuarioElimina = @usuarioElimina,
+        SET estado_a = 0,
+            usuarioElimina = @usuarioElimina,
             fechaElimina = NOW()
         WHERE ID_Sesion = @idSesion";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);  // El ID del usuario que elimina la sesión
+                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@idSesion", idSesion);
                     cmd.ExecuteNonQuery();
                 }
             }
-
-            CargarSesiones();
-            MessageBox.Show("Sesión eliminada.");
         }
 
         private void CargarUsuarios2()
@@ -636,21 +639,22 @@ namespace ProyectoFinalBasedatos
             {
                 con.Open();
                 string query = @"
-        UPDATE Moneda
-        SET usuarioElimina = @usuarioElimina,
-            fechaElimina = NOW()
-        WHERE ID_Moneda = @idMoneda";
+UPDATE Moneda
+SET estado_a = 0,
+    usuarioElimina = @usuarioElimina,
+    fechaElimina = NOW()
+WHERE ID_Moneda = @idMoneda";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);  // El ID del usuario que elimina la moneda
+                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@idMoneda", idMoneda);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             CargarMonedas();
-            MessageBox.Show("Moneda eliminada.");
+            MessageBox.Show("Moneda eliminada (borrado lógico).");
         }
 
         private void btnLimpiarCampos_Click(object sender, EventArgs e)
@@ -811,31 +815,35 @@ namespace ProyectoFinalBasedatos
                 return;
             }
 
-            int idCiudad = Convert.ToInt32(dgvCiudades.SelectedRows[0].Cells["ID_Ciudad"].Value);
+            int idCiudad = Convert.ToInt32(
+                dgvCiudades.SelectedRows[0].Cells["ID_Ciudad"].Value
+            );
 
             using (var con = DB.GetConnection())
             {
                 con.Open();
+
                 string query = @"
-        UPDATE Ciudad
-        SET usuarioElimina = @usuarioElimina,
-            fechaElimina = NOW()
-        WHERE ID_Ciudad = @idCiudad";
+            UPDATE ciudad
+            SET estado_a = 0,
+                usuarioelimina = @usuario,
+                fechaelimina = NOW()
+            WHERE id_ciudad = @idCiudad";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);  // Registrar el usuario que elimina la ciudad
+                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@idCiudad", idCiudad);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             CargarCiudades();
-            MessageBox.Show("Ciudad eliminada.");
+            MessageBox.Show("Ciudad eliminada (borrado lógico).");
 
-            // Limpiar campos después de eliminar
+            // Limpiar campos
             txtNombreCiudad.Clear();
-            cmbPais.SelectedIndex = -1; // Limpiar ComboBox
+            cmbPais.SelectedIndex = -1;
         }
 
         private void CargarConfiguraciones()
@@ -969,29 +977,33 @@ namespace ProyectoFinalBasedatos
                 return;
             }
 
-            int idConfig = Convert.ToInt32(dgvConfiguraciones.SelectedRows[0].Cells["ID_Config"].Value);
+            int idConfig = Convert.ToInt32(
+                dgvConfiguraciones.SelectedRows[0].Cells["ID_Config"].Value
+            );
 
             using (var con = DB.GetConnection())
             {
                 con.Open();
+
                 string query = @"
-        UPDATE Configuracion
-        SET usuarioElimina = @usuarioElimina,
-            fechaElimina = NOW()
-        WHERE ID_Config = @idConfig";
+UPDATE Configuracion
+SET estado_a = 0,
+    usuarioElimina = @usuario,
+    fechaElimina = NOW()
+WHERE ID_Config = @idConfig";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);  // Registrar el usuario que elimina la configuración
+                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@idConfig", idConfig);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             CargarConfiguraciones();
-            MessageBox.Show("Configuración eliminada.");
+            MessageBox.Show("Configuración eliminada (borrado lógico).");
 
-            // Limpiar campos después de eliminar
+            // Limpiar campos
             txtClave.Clear();
             txtValor.Clear();
         }
@@ -1138,29 +1150,33 @@ namespace ProyectoFinalBasedatos
                 return;
             }
 
-            int idNotificacion = Convert.ToInt32(dgvNotificaciones.SelectedRows[0].Cells["ID_Notificacion"].Value);
+            int idNotificacion = Convert.ToInt32(
+                dgvNotificaciones.SelectedRows[0].Cells["ID_Notificacion"].Value
+            );
 
             using (var con = DB.GetConnection())
             {
                 con.Open();
+
                 string query = @"
         UPDATE Notificacion
-        SET usuarioElimina = @usuarioElimina,
+        SET estado_a = 0,
+            usuarioElimina = @usuarioElimina,
             fechaElimina = NOW()
         WHERE ID_Notificacion = @idNotificacion";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);  // Registrar el usuario que elimina la notificación
+                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@idNotificacion", idNotificacion);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             CargarNotificaciones();
-            MessageBox.Show("Notificación eliminada.");
+            MessageBox.Show("Notificación eliminada (borrado lógico).");
 
-            // Limpiar campos después de eliminar
+            // Limpiar campos
             txtMensaje.Clear();
             txtTipo.Clear();
             cmbUsuario.SelectedIndex = 0;

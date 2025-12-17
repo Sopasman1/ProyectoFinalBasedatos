@@ -185,27 +185,24 @@ namespace ProyectoFinalBasedatos
             using (var con = DB.GetConnection())
             {
                 con.Open();
+
                 string query = @"
-            UPDATE cliente
-            SET nombre = '',
-                apellido = '',
-                email = '',
-                telefono = '',
-                id_pais = NULL,
-                usuarioElimina = @usuarioElimina,
-                fechaElimina = NOW()
-            WHERE id_cliente = @id";
+        UPDATE cliente
+        SET estado = 0,
+            usuarioElimina = @usuarioElimina,
+            fechaElimina = NOW()
+        WHERE id_cliente = @id";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);  // Registrar el usuario que elimina
+                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             CargarClientes();
-            MessageBox.Show("Cliente marcado como eliminado.");
+            MessageBox.Show("Cliente eliminado (borrado lógico).");
         }
 
         private void CargarPedidos()
@@ -367,22 +364,22 @@ namespace ProyectoFinalBasedatos
                 con.Open();
 
                 string query = @"
-            UPDATE pedido
-            SET estado = 'Eliminado','Eliminado'
-                        usuarioElimina = @usuarioElimina,
-                fechaElimina = NOW()
-                    WHERE id_pedido = @id";
-        
-        using (var cmd = new NpgsqlCommand(query, con))
+UPDATE pedido
+SET estado = 0,
+    usuarioElimina = @usuarioElimina,
+    fechaElimina = NOW()
+WHERE id_pedido = @id";
+
+                using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);  // Registrar quien elimina el pedido
+                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             CargarPedidos();
-            MessageBox.Show("Pedido marcado como eliminado.");
+            MessageBox.Show("Pedido eliminado (borrado lógico).");
         }
 
         private void CargarFacturas()
@@ -528,34 +525,35 @@ namespace ProyectoFinalBasedatos
 
         private void btnEliminarFactura_Click(object sender, EventArgs e)
         {
-            if (dgvFactura.SelectedRows.Count == 0)
+            if (dgvPedidos.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Selecciona una factura.");
+                MessageBox.Show("Selecciona un pedido.");
                 return;
             }
 
-            int id = Convert.ToInt32(dgvFactura.SelectedRows[0].Cells["id_factura"].Value);
+            int id = Convert.ToInt32(dgvPedidos.SelectedRows[0].Cells["id_pedido"].Value);
 
             using (var con = DB.GetConnection())
             {
                 con.Open();
 
                 string query = @"
-            UPDATE factura
-            SET usuarioElimina=@usuarioElimina,
-                fechaElimina=NOW()
-            WHERE id_factura=@id";
+UPDATE pedido
+SET estado = 0,
+    usuarioElimina = @usuarioElimina,
+    fechaElimina = NOW()
+WHERE id_pedido = @id";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);  // Registrar quien elimina la factura
+                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
             }
 
-            CargarFacturas();
-            MessageBox.Show("Factura eliminada.");
+            CargarPedidos();
+            MessageBox.Show("Pedido eliminado (borrado lógico).");
         }
 
         private void CargarMetodosPago()
@@ -640,24 +638,26 @@ namespace ProyectoFinalBasedatos
 
             int idPago = Convert.ToInt32(dgvPagos.SelectedRows[0].Cells["id_pago"].Value);
 
-            string query = @"
-    UPDATE pago 
-    SET usuarioElimina = @usuario, 
-        fechaElimina = NOW() 
-    WHERE id_pago = @id";
-
             using (var con = DB.GetConnection())
             {
                 con.Open();
+
+                string query = @"
+UPDATE pago
+SET estado = 0,
+    usuarioElimina = @usuario,
+    fechaElimina = NOW()
+WHERE id_pago = @id";
+
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);  // Registrar acción del usuario
+                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@id", idPago);
                     cmd.ExecuteNonQuery();
                 }
             }
 
-            MessageBox.Show("Pago marcado como eliminado.");
+            MessageBox.Show("Pago eliminado (borrado lógico).");
             CargarPagos();
         }
 
@@ -852,22 +852,24 @@ namespace ProyectoFinalBasedatos
             using (var con = DB.GetConnection())
             {
                 con.Open();
+
                 string query = @"
         UPDATE Envio
-        SET usuarioElimina = @usuario,
+        SET estado = 0,
+            usuarioElimina = @usuario,
             fechaElimina = NOW()
         WHERE ID_Envio = @idEnvio";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);  // Registrar acción del usuario
+                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@idEnvio", idEnvio);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             CargarEnvios();
-            MessageBox.Show("Envío marcado como eliminado.");
+            MessageBox.Show("Envío eliminado (borrado lógico).");
         }
     }
 }

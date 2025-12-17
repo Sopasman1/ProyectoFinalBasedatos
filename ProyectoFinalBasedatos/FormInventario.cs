@@ -241,9 +241,11 @@ namespace ProyectoFinalBasedatos
                 con.Open();
 
                 string query = @"
-            UPDATE producto
-            SET usuarioelimina=@usuario, fechaelimina=NOW()
-            WHERE id_producto=@id";
+        UPDATE producto
+        SET estado_a = 0,
+            usuarioelimina = @usuario,
+            fechaelimina = NOW()
+        WHERE id_producto = @id";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
@@ -253,6 +255,7 @@ namespace ProyectoFinalBasedatos
                 }
             }
 
+            MessageBox.Show("Producto marcado como eliminado.");
             CargarProductos();
         }
 
@@ -331,8 +334,10 @@ namespace ProyectoFinalBasedatos
 
                 string query = @"
         UPDATE categoria
-        SET usuarioelimina=@ue, fechaelimina=NOW()
-        WHERE id_categoria=@id";
+        SET estado = 0,
+            usuarioelimina = @ue,
+            fechaelimina = NOW()
+        WHERE id_categoria = @id";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
@@ -554,8 +559,10 @@ ORDER BY s.id_subcategoria";
                     con.Open();
                     string query = @"
             UPDATE subcategoria
-            SET usuarioelimina=@ue, fechaelimina=NOW()
-            WHERE id_subcategoria=@id";
+            SET estado_a = 0,
+                usuarioElimina = @ue,
+                fechaElimina = NOW()
+            WHERE id_subcategoria = @id";
 
                     using (var cmd = new NpgsqlCommand(query, con))
                     {
@@ -713,21 +720,23 @@ ORDER BY s.id_subcategoria";
                 con.Open();
 
                 string query = @"
-            UPDATE marca 
-            SET usuarioelimina=@u,
-                fechaelimina=NOW()
-            WHERE id_marca=@id";
+        UPDATE marca
+        SET estado_a = 0,
+            usuarioElimina = @usuario,
+            fechaElimina = NOW()
+        WHERE id_marca = @id";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
+                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@id", id);
-                    cmd.Parameters.AddWithValue("@u", usuarioAccionID);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             CargarMarcas();
             LimpiarCamposMarca();
+            MessageBox.Show("Marca desactivada correctamente.");
         }
 
         private void LimpiarCamposMarca()
@@ -891,11 +900,12 @@ ORDER BY s.id_subcategoria";
             using (var con = DB.GetConnection())
             {
                 con.Open();
-                string query =
-                @"UPDATE inventario SET 
-              usuarioelimina=@u,
-              fechaelimina=NOW()
-          WHERE id_inventario=@id";
+                string query = @"
+        UPDATE inventario
+        SET estado_a = 0,
+            usuarioElimina = @u,
+            fechaElimina = NOW()
+        WHERE id_inventario = @id";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
@@ -907,6 +917,7 @@ ORDER BY s.id_subcategoria";
 
             CargarInventario();
             LimpiarInventario();
+            MessageBox.Show("Inventario eliminado (borrado lógico).");
 
         }
 
@@ -1082,16 +1093,20 @@ ORDER BY s.id_subcategoria";
                 return;
             }
 
-            int id = Convert.ToInt32(dgvAuditoria.CurrentRow.Cells["id_auditoria"].Value);
+            int id = Convert.ToInt32(
+                dgvAuditoria.CurrentRow.Cells["id_auditoria"].Value
+            );
 
             using (var con = DB.GetConnection())
             {
                 con.Open();
 
                 string query = @"
-            UPDATE AuditoriaInventario
-            SET usuarioelimina=@usuario, fechaelimina=NOW()
-            WHERE id_auditoria=@id";
+            UPDATE auditoriaInventario
+            SET estado_a = 0,
+                usuarioelimina = @usuario,
+                fechaelimina = NOW()
+            WHERE id_auditoria = @id";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
@@ -1103,6 +1118,7 @@ ORDER BY s.id_subcategoria";
 
             CargarAuditoria();
             LimpiarAuditoria();
+            MessageBox.Show("Registro marcado como eliminado.");
         }
 
         private void btnActualizarAuditoria_Click(object sender, EventArgs e)

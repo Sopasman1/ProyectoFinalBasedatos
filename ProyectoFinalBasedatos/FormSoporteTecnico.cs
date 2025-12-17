@@ -155,27 +155,30 @@ namespace ProyectoFinalBasedatos
                 return;
             }
 
-            int idTicket = Convert.ToInt32(dgvTicketsSoporte.SelectedRows[0].Cells["ID_Ticket"].Value);
+            int idTicket = Convert.ToInt32(
+                dgvTicketsSoporte.SelectedRows[0].Cells["ID_Ticket"].Value
+            );
 
             using (var con = DB.GetConnection())
             {
                 con.Open();
                 string query = @"
-    UPDATE TicketSoporte
-    SET usuarioElimina = @usuarioElimina,
-        fechaElimina = NOW()
-    WHERE ID_Ticket = @idTicket";
+UPDATE TicketSoporte
+SET estado_a = 0,
+    usuarioElimina = @usuarioElimina,
+    fechaElimina = NOW()
+WHERE ID_Ticket = @idTicket";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);  // Registra el usuario que elimina el ticket
+                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@idTicket", idTicket);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             CargarTicketsSoporte();
-            MessageBox.Show("Ticket de soporte eliminado.");
+            MessageBox.Show("Ticket de soporte eliminado (borrado lógico).");
         }
 
         private void CargarEquipos()
@@ -298,27 +301,31 @@ namespace ProyectoFinalBasedatos
                 return;
             }
 
-            int idEquipo = Convert.ToInt32(dgvEquipos.SelectedRows[0].Cells["ID_Equipo"].Value);
+            int idEquipo = Convert.ToInt32(
+                dgvEquipos.SelectedRows[0].Cells["ID_Equipo"].Value
+            );
 
             using (var con = DB.GetConnection())
             {
                 con.Open();
+
                 string query = @"
-    UPDATE Equipo
-    SET usuarioElimina = @usuarioElimina,
-        fechaElimina = NOW()
-    WHERE ID_Equipo = @idEquipo";
+UPDATE Equipo
+SET estado = 0,
+    usuarioElimina = @usuario,
+    fechaElimina = NOW()
+WHERE ID_Equipo = @idEquipo";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);  // Agregar el ID del usuario que elimina el equipo
+                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@idEquipo", idEquipo);
                     cmd.ExecuteNonQuery();
                 }
             }
 
+            MessageBox.Show("Equipo eliminado (borrado lógico).");
             CargarEquipos();
-            MessageBox.Show("Equipo eliminado.");
         }
 
         private void CargarMantenimientos()
@@ -443,27 +450,32 @@ namespace ProyectoFinalBasedatos
                 return;
             }
 
-            int idMantenimiento = Convert.ToInt32(dgvMantenimientos.SelectedRows[0].Cells["ID_Mantenimiento"].Value);
+            int idMantenimiento = Convert.ToInt32(
+                dgvMantenimientos.SelectedRows[0].Cells["ID_Mantenimiento"].Value
+            );
 
             using (var con = DB.GetConnection())
             {
                 con.Open();
+
                 string query = @"
-    UPDATE Mantenimiento
-    SET usuarioElimina = @usuarioElimina,
-        fechaElimina = NOW()
-    WHERE ID_Mantenimiento = @idMantenimiento";
+UPDATE mantenimiento
+SET estado = 0,
+    usuarioelimina = @usuario,
+    fechaelimina = NOW()
+WHERE id_mantenimiento = @id
+  AND estado = 1";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID); // Agregar el ID del usuario que elimina el mantenimiento
-                    cmd.Parameters.AddWithValue("@idMantenimiento", idMantenimiento);
+                    cmd.Parameters.AddWithValue("@usuario", usuarioAccionID);
+                    cmd.Parameters.AddWithValue("@id", idMantenimiento);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             CargarMantenimientos();
-            MessageBox.Show("Mantenimiento eliminado.");
+            MessageBox.Show("Mantenimiento eliminado (borrado lógico).");
         }
 
         private void CargarContratos()
@@ -604,27 +616,30 @@ namespace ProyectoFinalBasedatos
                 return;
             }
 
-            int idContrato = Convert.ToInt32(dgvContratos.SelectedRows[0].Cells["ID_Contrato"].Value);
+            int idContrato = Convert.ToInt32(
+                dgvContratos.SelectedRows[0].Cells["ID_Contrato"].Value
+            );
 
             using (var con = DB.GetConnection())
             {
                 con.Open();
                 string query = @"
-        UPDATE ContratoServicio
-        SET usuarioElimina = @usuarioElimina,
-            fechaElimina = NOW()
-        WHERE ID_Contrato = @idContrato";
+UPDATE ContratoServicio
+SET estado = 0,
+    usuarioElimina = @usuarioElimina,
+    fechaElimina = NOW()
+WHERE ID_Contrato = @idContrato";
 
                 using (var cmd = new NpgsqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID); // Usuario que elimina el contrato
+                    cmd.Parameters.AddWithValue("@usuarioElimina", usuarioAccionID);
                     cmd.Parameters.AddWithValue("@idContrato", idContrato);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             CargarContratos();
-            MessageBox.Show("Contrato eliminado.");
+            MessageBox.Show("Contrato eliminado (borrado lógico).");
         }
     }
 }
